@@ -1,0 +1,62 @@
+We thank reviewers for their careful feedback. We are encouraged that R2 identifies the cross-context comparison as "the paper's strongest contribution," R1 finds the topic "timely and important," and R3 agrees the conclusions are "quite likely correct." § (section) numbers refer to the revised manuscript.
+
+1. Contribution & Grounding [R1, R2]
+
+Contribution. We adopt R2's framing. The contribution is empirical and design-oriented: (1) the cross-context comparison across mobility and cognitive demand profiles; (2) the design-implication framework (§8.3–8.4); (3) the finding that preference–performance dissociations are context-dependent. We reframe the four techniques as design probes operationalizing distinct points in the accessibility–interference trade-off space, not as fundamentally new mechanisms.
+
+While building on established reference frames, each probe contributes a specific mechanism: ScaleStable adds constant-angular-size scaling to world-locking; PeriphGuide uses peripheral clamping, not head-locked centering; AdaptiveLock toggles body/world-lock by real-time locomotion state rather than activity type; AdaptiveFlow blends frames smoothly rather than switching discretely. No prior work combines these across individual and collaborative contexts.
+
+
+Related work and discussion. We will expand §2.3 around the five papers R1 named—Lu 2023, Lindlbauer 2019, Pfeuffer 2021, Jannat 2025, Satkowski 2022—move the path-anchoring discussion [27] there, and substantially revise §8 (General Discussion) to situate each finding within prior literature. We also tighten the manuscript's structure as R1 noted: shortening repeated content, presenting the key contributions earlier in §1, and moving premature interpretation in §7.4–§7.5 into the §8.
+
+
+Design guidelines (§8.4). R1 notes the five original items shared a single underlying axis. We restructure into four orthogonal dimensions: (1) Which technique fits the dominant demand—mobility-dominant tasks favor accessibility-preserving anchoring, cognitive-dominant favor stability-preserving (Study 1 & 2 reversal); (2) How often to reconfigure—static/discrete/continuous; (3) What to optimize—perceived interference vs. objective accessibility; (4) System-driven vs. user-initiated access.
+
+
+2.Methodological Concerns [R2, R3]
+
+Environment order and fatigue. R2 rightly notes the fixed room order confounds environment with order. This was chosen for safety (increasing mobility complexity). We will reframe environment findings as exploratory and add this to §9 (Limitations). Technique main effects are unaffected since Technique was counterbalanced within each environment set.
+
+To directly test fatigue, we re-analyzed with trial order (1–12) as predictor (mixed-effects): trial order showed no effect (β=−0.078, p=.449), no technique-specific pattern (all interactions p>.7), and was far smaller than the technique effect (η²p=.618). We will report this in §6.3 and note session length in §9.
+
+
+Baseline comparison. The pilot study (§4) established limitations of conventional world-, head-, and body-locked anchoring. The main studies characterize relative differences among the four proposed techniques; we will soften "outperformed" language in the Abstract and §1, and state explicitly in §3 that the pilot provides the conventional-anchor references.
+
+
+N=12 and statistical robustness. We acknowledge N=12 is relatively small for a 4×3 within-subjects design, though common in HCI/AR perception studies. Study 2 provides additional evidence with N=24 (12 dyads). We will report 95% CIs in §6.3 and §7.4, add Friedman checks, and note sample size in §9.
+
+
+Panel size vs. field of view. We separate two easily-merged things: how big the panel looks, and where it sits.
+
+- How big it looks. What matters perceptually is angular size—how much of the view the panel covers. We kept this constant across all four techniques, so none looked bigger or more intrusive. Three techniques use a fixed panel at a set distance (PeriphGuide ~0.8 m, clamped 0.8–1.0 m; AdaptiveLock/AdaptiveFlow ~0.85 m); ScaleStable reaches the same apparent size by rescaling with distance. So panel angular size is controlled, not a confound.
+
+-Where it sits. This does differ between techniques—and that is our independent variable, not a flaw. Head-, body-, and world-locked anchoring are defined by where they place content relative to the user; forcing them to the same place would erase the distinction we study.
+
+We will add a design-parameter note to §5.1 and flag HoloLens 2's narrow FoV in §9 [R1, R3].
+
+
+3. Corrections & Clarifications [R1, R2, R3]
+
+AdaptiveLock description. The §6.4 description contains an error, and we are grateful it was caught. The correct behavior is walking→body-locked, stationary→world-locked, as stated in §5.1.2. We will correct §6.4 and verify every other mention.
+
+
+AdaptiveFlow trigger [R1]. Either condition triggers the world-locked transition: walking >1.5 m/s, OR head yaw >150°/s. They act at different temporal scales—fast walking triggers immediately; high yaw after 2-s smoothing. We will clarify in §5.1.2.
+
+
+Gaze measurement [R1]. We classify gaze by intersection with the panel's bounding rectangle, so rays passing through the 80%-opacity panel to read the environment are counted as interface attention; we cannot fully separate looking-at from looking-through with the HoloLens 2's eye tracking. Because this looking-through is task-driven and comparable across all four techniques within an environment, it inflates every condition's Interface Attention Ratio by a similar amount—canceling out in the relative comparisons and leaving the significant differences unaffected. As a check, even assuming up to 10% of panel-intersecting rays are looking-through, all significant differences remain same. We will note the ambiguity in §9.
+
+
+Overgeneralized writing [R1]. We will replace loose claims with concrete measurements, remove filler, and add detail where it aids understanding. For example: "AdaptiveLock holds the panel at ±30°H/±20°V, 0.85 m while walking" replaces a vague claim; the two Introduction sentences R1 named gain added references and an explicit reason (traditional anchors optimize for either stability or accessibility, not both); we add a brief description of the pilot's walking–reading–communicating task in §4; and we move the Temporal Availability definition from the appendix into §6.2.4 [R3].
+
+
+Smoothing [R3]. All four techniques include temporal smoothing (§5.1.1). However, smoothing addresses only jitter, not the deeper trade-off: a smooth head-locked panel still blocks the real world; a smooth world-locked one still disappears when the user walks away. What removes this trade-off is letting anchoring change behavior with user state—exactly what our adaptive techniques contribute.
+
+
+4. Preference–Performance Dissociation [R3]
+
+R3 suggests ScaleStable's preference might reflect implementation flaws, not a real finding. We respectfully disagree, for three reasons. First, if panel size were the issue, AdaptiveLock should score poorly too—it uses a tighter region (±30°H/±20°V vs. PeriphGuide's ±40°H/±30°V) yet earned the top SUS (83.75) and 42–50% of first-place votes. Second, AdaptiveFlow reversed between studies without code changes: fine in Study 1 (SUS 66.67) but last for 67% of pairs in Study 2—implementation cannot explain the reversal. Third, users described behavior: "always on the move—chasing it with my eyes" (W5); "always in my way" (W8). The preference–performance gap is itself a finding (§6.4, §8.2): users accept measurable performance costs to reduce visual interference.
+
+
+AR vs. VR [R3]. AR differs from VR in several aspects: physical stakes (real-world hazards if attention lapses); unscripted environments (real-world events cannot be pre-planned); and mutual occlusion (content overlaps and blocks the real world). A fourth is depth: AR overlays fixed-focal-plane content on a continuous-depth real world, making vergence–accommodation conflict more disruptive than in VR's synthetic scene. We will clarify this in §1.
+
+We thank the reviewers and are confident these revisions strengthen the paper.
