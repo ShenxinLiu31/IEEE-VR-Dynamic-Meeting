@@ -6,6 +6,45 @@ context, no performance claim. Evidence is reported separately in Studies 1–2.
 
 ---
 
+## 0. Reference-frame taxonomy (for Design Space §3 opening)
+
+Before the mechanism-level breakdown, ground the four techniques in the standard AR anchoring
+taxonomy so the paper isn't inventing categories on the fly: reference frames split into
+**environment-referenced** (fixed to physical space — world-locked) and **user-referenced**
+(fixed relative to the user's own body), with user-referenced further dividing into
+**head-referenced** and **body-referenced**. This maps onto the classic
+display-fixed/body-fixed/world-fixed (or screen-/body-/world-stabilized) taxonomy already
+established in the AR literature — cite the relevant survey/foundational source here rather
+than presenting this as a novel framing.
+
+- **ScaleStable** — environment-referenced (world-locked).
+- **PeriphGuide** — user-referenced, specifically head-referenced.
+- **AdaptiveLock / AdaptiveFlow** — toggle between environment-referenced (stationary) and
+  user-referenced, specifically body-referenced (moving).
+
+Suggested phrasing for the manuscript:
+
+> Reference frames for AR anchoring fall into two structural categories:
+> environment-referenced (fixed to physical space) and user-referenced (fixed relative to the
+> user's own body, further divided into head-referenced and body-referenced). ScaleStable
+> occupies the environment-referenced category; PeriphGuide is head-referenced; AdaptiveLock
+> and AdaptiveFlow toggle between environment-referenced (stationary) and body-referenced
+> (moving) modes.
+
+**Scope of this framing — read before reusing it elsewhere in the manuscript:**
+- Use it only as the organizing frame in the Design Space introduction. Every other section
+  (Method, Results, Discussion) must keep using the precise mechanism term (head-locked /
+  body-locked / world-locked) — never write "user-referenced techniques showed X," since
+  PeriphGuide (head-referenced) and AdaptiveLock/Flow's accessible mode (body-referenced)
+  behave differently (offset relative to gaze vs. offset relative to torso) and have never
+  been tested under the same reference sub-type. Collapsing them in an actual results claim
+  would be a real methodological error, not just loose wording.
+- This categorization does not replace the technique-by-technique distinctions R1 asked for
+  in §2.3 (e.g., AdaptiveLock vs. path-anchoring). It operates at the frame-type level; the
+  literature comparisons operate at the specific-mechanism level. Both are still required.
+
+---
+
 ## A. Two structural questions, four techniques
 
 **Q1** — Does the panel commit to one reference frame for the entire session, or does it
@@ -16,12 +55,12 @@ change reference frame in response to the user's real-time motion state?
 **Q2** — What property is fixed or constrained to compensate for that frame's structural
 weakness?
 
-**ScaleStable** — *world-locked*
+**ScaleStable** — *world-locked (environment-referenced)*
 - **Weakness**: accessibility degrades with viewing distance/angle.
 - **Compensates via**: continuous scale adjustment — constant angular (retinal) size.
 - Operational range 0.5–3.5 m · continuous user-facing rotation · Move/Rotate Lerp = 0.1.
 
-**PeriphGuide** — *head-locked*
+**PeriphGuide** — *head-locked (user-referenced, head-referenced)*
 - **Weakness**: persistent occlusion of central vision.
 - **Compensates via**: fixed angular offset, clamped to the periphery of the FoV.
 - Render distance 0.8–1.0 m · offset clamped **±21.5°H** / ~~±30°V~~ **[see FoV flag below]** ·
@@ -54,13 +93,13 @@ weakness?
 slow–moderate 0.3–1.5 m/s · fast >1.5 m/s, or head yaw >150°/s). Where is the switch
 threshold placed on this shared scale, and how is the transition executed?
 
-**AdaptiveLock** — *world ↔ body-locked*
+**AdaptiveLock** — *world ↔ body-locked (environment-referenced ↔ body-referenced)*
 - **Threshold at**: stationary ↔ moving boundary (0.3 m/s) — a binary distinction.
 - **Executed as**: discrete, instantaneous reassignment.
 - World-locked when stationary >0.5 s (within 1 m radius) · **body-locked** while moving
   (0.85 m, ±30°H/±20°V — flagged above for the same FoV correction).
 
-**AdaptiveFlow** — *body ↔ world-locked*
+**AdaptiveFlow** — *body ↔ world-locked (body-referenced ↔ environment-referenced)*
 - **Threshold at**: slow–moderate ↔ fast boundary (1.5 m/s or fast yaw) — a graded
   distinction.
 - **Executed as**: continuous ~2 s interpolation.
@@ -127,6 +166,7 @@ in any manuscript draft.
 
 | Item | Status |
 |---|---|
+| Reference-frame taxonomy (environment- vs. user-referenced, head- vs. body-referenced) | ✅ Added — use only as Design Space §3 framing, not as a substitute for precise per-technique terms elsewhere |
 | PeriphGuide horizontal clamp ±40°H → ±21.5°H | ✅ Fixed |
 | PeriphGuide vertical clamp ±30°V | ⚠ Flagged, not fixed — same error class, needs your confirmation |
 | AdaptiveLock clamp ±30°H/±20°V | ⚠ Flagged, not fixed — same error class, needs your confirmation |
