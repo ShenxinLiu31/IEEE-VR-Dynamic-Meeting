@@ -5,6 +5,14 @@ AR anchoring techniques dissociate, and which one "wins" flips depending on whet
 task's dominant demand is motor/navigational or cognitive/environmental.** Four techniques
 and two studies exist to demonstrate this claim cleanly, not as independent contributions.
 
+**Status note**: §1, §3, and §4 (Study 1) below reflect the finalized design-logic
+corrections (reference-frame taxonomy, corrected FoV values, AdaptiveLock/AdaptiveFlow
+threshold rationale, N=16, no baseline, depth-based gaze classification) — see
+`Design_Logic_Corrected.md` and `Study1_Storyline.md` for the full underlying arguments.
+**§5 (Study 2) has not yet been through this pass** and still reflects the original N=12/
+bounding-box-gaze/pre-taxonomy version — treat it as the next thing to reconcile, not as
+equally current.
+
 ---
 
 ## Title
@@ -62,16 +70,27 @@ smoothing) but has not asked whether *users actually want* what improves their m
 performance, nor whether the answer changes with task type. That absence is the gap.
 
 ### 1.5 Four design probes (not "four novel techniques")
-One sentence each, exact parameters, no hedging verbs ("attempts to," "tries to"):
-- **ScaleStable** — world-locked + distance-based angular scaling (constant apparent size,
-  0.5–3.5 m operational range).
-- **PeriphGuide** — head-locked but peripheral-clamped (±40°H/±30°V), not centered.
-- **AdaptiveLock** — locomotion-state-triggered discrete toggle: body-locked while walking
-  (>0.3 m/s), world-locked while stationary (>0.5 s still). [Confirm this is the final,
-  correct direction before drafting — this was inconsistent across the ISMAR draft.]
-- **AdaptiveFlow** — same toggle logic, ~2 s continuous interpolation instead of a discrete
-  switch; triggers on fast walking (>1.5 m/s) OR head yaw (>150°/s), acting at different
-  timescales (immediate vs. after 2 s smoothing).
+Introduced via the reference-frame taxonomy (environment-referenced vs. user-referenced,
+the latter split into head-/body-referenced — see §3.1), then stated with exact parameters,
+no hedging verbs ("attempts to," "tries to"):
+- **ScaleStable** — environment-referenced (world-locked) + distance-based angular scaling
+  (constant apparent size, 0.5–3.5 m operational range).
+- **PeriphGuide** — user-referenced, head-referenced, peripheral-clamped (**±21.5°H**,
+  matching HoloLens 2's actual horizontal FoV — the vertical value needs the same correction
+  before finalizing, currently flagged in Design_Logic_Corrected.md), not centered.
+- **AdaptiveLock** — environment-referenced ↔ body-referenced, locomotion-state-triggered
+  discrete toggle: **confirmed** body-locked while walking (>0.3 m/s), world-locked while
+  stationary (>0.5 s still). No longer an open question — resolved and consistent across
+  §5.1.2-equivalent sections; verify no stray "head-locked" references remain in the final
+  manuscript text.
+- **AdaptiveFlow** — body-referenced ↔ environment-referenced, same toggle logic, ~2 s
+  continuous interpolation instead of a discrete switch; triggers on fast walking (>1.5 m/s)
+  OR head yaw (>150°/s), acting at different timescales (immediate vs. after 2 s smoothing).
+  **The two techniques' thresholds are deliberately not aligned** (AdaptiveLock at the
+  stationary/moving boundary, AdaptiveFlow further out at the slow-moderate/fast boundary) —
+  state this design rationale explicitly in §3.3, not just here: aligning them would collapse
+  one technique's accessible-mode behavior across the exact speed range Study 1's task lives
+  in (see §3.3 and Design_Logic_Corrected.md §B for the full argument).
 
 ### 1.6 Two studies, framed by dominant demand, not by "individual vs. collaborative"
 Study 1: high mobility, moderate cognitive load, individual dual-task.
@@ -124,10 +143,24 @@ World/head/body-lock definitions, one paragraph, citing the standard sources.
 ## 3. Design Space & Technique Implementation
 
 ### 3.1 The trade-off framework
-Two axes: field-of-view interference (how much digital content competes with/occludes
-environmental processing) and information accessibility (how easily content can be reached
-across mobility states). State plainly that traditional anchors each pick a fixed point on
-this space; the four probes sample other points, including motion-adaptive ones.
+Open with the reference-frame taxonomy: reference frames split into
+**environment-referenced** (fixed to physical space — world-locked) and **user-referenced**
+(fixed relative to the user's body), the latter dividing into **head-referenced** and
+**body-referenced**. This maps onto the classic display-fixed/body-fixed/world-fixed
+taxonomy already established in the AR literature — cite it here rather than presenting the
+categories as novel. ScaleStable is environment-referenced; PeriphGuide is head-referenced;
+AdaptiveLock/AdaptiveFlow toggle between environment-referenced and body-referenced. Use this
+categorization only as organizing scaffolding in this section — Method, Results, and
+Discussion must keep using the precise per-technique terms (never "user-referenced
+techniques showed X"), since head-referenced and body-referenced content behaves differently
+(offset relative to gaze vs. relative to torso) and the two have never been tested under the
+same sub-type.
+
+Then state the trade-off axes: field-of-view interference (how much digital content competes
+with/occludes environmental processing) and information accessibility (how easily content
+can be reached across mobility states). State plainly that traditional anchors each pick a
+fixed point on this space; the four probes sample other points, including motion-adaptive
+ones.
 
 ### 3.2 Separating panel size from panel location
 One explicit paragraph: angular size is held constant across all four techniques (state exact
@@ -139,6 +172,18 @@ a response to an anticipated objection.
 Table or itemized list with exact parameters for each of the four techniques (angular extent,
 distance range, trigger thresholds, smoothing constants). All four techniques use temporal
 smoothing (Lerp = 0.1) — state once here.
+
+**State the AdaptiveLock/AdaptiveFlow threshold-placement rationale explicitly in this
+section** (from Design_Logic_Corrected.md §B): AdaptiveLock's threshold answers a binary
+design question (is the user moving at all — any nonzero movement should get accessible
+content); AdaptiveFlow's answers a graded one (at what point does motion become disruptive
+enough to justify a ~2 s transition — that point is *fast* motion specifically). A shared
+threshold breaks one technique regardless of which direction you align it: lowering
+AdaptiveFlow's threshold puts it in near-continuous transition during ordinary walking;
+raising AdaptiveLock's threshold makes it world-locked through the moderate-walking range
+where most of Study 1's task actually happens, undermining its recall advantage. State this
+prospectively from each technique's design purpose — never as a post-hoc defense of the
+data (i.e., never "we kept them different because aligning them hurt performance").
 
 ### 3.4 Implementation
 HoloLens 2 + Unity, spatial anchors, motion thresholds (stationary <0.3 m/s, slow 0.3–1.5 m/s,
@@ -152,28 +197,52 @@ fast >1.5 m/s).
 RQ1: When mobility demand is high and cognitive demand is moderate, how do anchoring
 techniques compare on objective performance versus subjective preference?
 
-### 4.2 Method
-- **Participants**: 12 (report demographics).
-- **Design**: 4 techniques × 2 environments (Open Space, Room-to-Room). Technique order and
-  environment order both fully counterbalanced (state the specific scheme — e.g., 8-condition
-  Williams design or independently counterbalanced Latin squares). Report resulting session
-  length and note it is shorter than a 3-environment design would require.
+### 4.2 Method — finalized
+- **Participants**: **N=16** (report demographics).
+- **Design**: 4 techniques × 2 environments (Open Space, Room-to-Room) = 8 conditions per
+  participant, single session. Technique order and environment order both fully
+  counterbalanced via an **8-condition Williams design** — N=16 gives exactly 2 participants
+  per sequence, fully balanced (no longer an open alternative between Williams and
+  independent Latin squares — Williams is the finalized scheme).
+- **Session length**: ~2.5–3 hours (8 conditions × ~16 min task+recall+questionnaires+break,
+  plus ~20–30 min setup/calibration and a ~30 min mid-session break) — state explicitly as a
+  structural response to the fatigue concern, not a footnote; shorter than the original
+  3–4.5 hour, 12-condition ISMAR design.
 - **Tasks**: waypoint navigation (mobility) concurrent with slide-deck memory encoding
   (cognitive), immediate 12-item recall test per condition.
 - **Measures**: interface attention ratio, immediate recall accuracy, temporal availability,
   NASA-TLX, SUS, preference ranking.
+- **Gaze measurement — upgraded**: AOI classification via gaze-ray intersection against the
+  HoloLens spatial mesh compared to the fixed panel-distance plane (nearer intersection along
+  the ray wins), replacing pure bounding-box intersection. This resolves the "looking through
+  the semi-transparent panel" ambiguity structurally rather than only bounding it after the
+  fact. Keep the sensitivity-check argument (≤10% misclassification doesn't change
+  significant contrasts) as a secondary robustness note, not the primary defense.
+- No baseline condition (decision finalized — world-locked was considered and rejected as a
+  baseline candidate: its result relative to ScaleStable is near-certain given ScaleStable is
+  explicitly world-locked + a compensating mechanism, and it would reopen the constant-
+  angular-size confound §3.2 is built to close). This means the "how much do these techniques
+  improve over traditional anchoring" question still rests entirely on the pilot study plus
+  softened "outperformed" language in the Abstract/Introduction (§0.6) — not strengthened by
+  anything in this round of decisions.
 
 ### 4.3 Results (ordered around the claim)
 1. **Lead with the dissociation.** ScaleStable significantly impairs recall (numbers) and
    draws less interface attention (numbers) than the other three — *and* still tops SUS and
    preference-ranking votes alongside AdaptiveLock. State this contrast as the headline
    result, in the first paragraph of Results, not as a later aside.
-2. **Then the performance mechanism.** Report the recall and attention-ratio main effects
+2. **Explain AdaptiveLock vs. AdaptiveFlow differences using the threshold-placement logic**
+   (§3.3), not just "one is discrete, one is continuous." If AdaptiveFlow shows more gaze
+   transitions, more time-in-transition, or higher workload than AdaptiveLock, tie it
+   explicitly to the mechanism: AdaptiveFlow's threshold sits further out and its transitions
+   take ~2 s, so it spends more of the session in transit. Connect data to mechanism, don't
+   just report the contrast as a technique-level curiosity.
+3. **Then the performance mechanism.** Report the recall and attention-ratio main effects
    (F, p, η²) as the explanation for *why* accessibility helps objectively.
-3. **Robustness**: 95% CIs on all key contrasts; Friedman test as a non-parametric check;
+4. **Robustness**: 95% CIs on all key contrasts; Friedman test as a non-parametric check;
    trial-order mixed-effects null result (reported plainly as a fatigue check, not flagged
    defensively).
-4. Workload: no technique effect — note this plainly; it means accessibility differences
+5. Workload: no technique effect — note this plainly; it means accessibility differences
    didn't cost users measurable cognitive burden at this load level (important setup for
    Study 2, where this changes).
 
@@ -282,10 +351,15 @@ State each as scope, not apology:
   unaddressed.
 - HoloLens 2 FoV — acknowledge, tie back to §3.2's size/location distinction so it reads as
   accounted for, not overlooked.
-- N=12 (Study 1) / 12 dyads (Study 2) — standard for within-subjects HCI/AR work; CIs
-  reported throughout; Study 2's N=24 as corroborating scale.
-- Gaze-through-transparent-panel measurement ambiguity — report the sensitivity check
-  (≤10% misclassification does not change significant contrasts).
+- N=16 (Study 1) / 12 dyads (Study 2) — Study 1's N was raised from the ISMAR draft's 12
+  specifically to support the 8-condition Williams design cleanly (2 participants/sequence);
+  CIs reported throughout; Study 2's N=24 as corroborating scale. This is a stronger position
+  than "N=12 is standard for the field" alone.
+- Depth-based gaze classification (§4.2) resolves the transparent-panel "looking through"
+  ambiguity but has its own narrower residual limitation: it cannot distinguish two real-world
+  objects at similar depth along the same gaze ray. State this as the actual remaining
+  limitation, not the original bounding-box ambiguity — the sensitivity check
+  (≤10% misclassification does not change significant contrasts) remains as a secondary note.
 - On-demand/glanceable anchoring untested — explicit pointer to future work building on Lu
   2023.
 
